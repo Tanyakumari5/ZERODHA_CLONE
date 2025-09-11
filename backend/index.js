@@ -328,3 +328,7 @@ app.post("/newOrder", async (req, res) => {
 
   res.send("Order saved!");
 });
+
+app.get('/', (req, res) => {
+  res.send('API is running...');
+});
