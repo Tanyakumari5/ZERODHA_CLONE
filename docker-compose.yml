@@ -1,0 +1,54 @@
+version: "3.9"
+
+services:
+  frontend:
+    build: ./frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - zerodha-net
+
+  dashboard:
+    build: ./dashboard
+    ports:
+      - "3001:80"
+    depends_on:
+      - backend
+    networks:
+      - zerodha-net
+
+  backend:
+    build: ./backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - MONGO_URI=mongodb://mongo:27017/zerodha
+      - JWT_SECRET=your_secret_key
+      - TWILIO_ACCOUNT_SID=your_sid
+      - TWILIO_AUTH_TOKEN=your_token
+    depends_on:
+      - mongo
+    networks:
+      - zerodha-net
+
+  mongo:
+    image: mongo:6
+    container_name: zerodha-mongo
+    restart: always
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - zerodha-net
+
+volumes:
+  mongo-data:
+
+networks:
+  zerodha-net:
+    driver: bridge
+
